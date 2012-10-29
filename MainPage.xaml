@@ -1,0 +1,170 @@
+﻿<phone:PhoneApplicationPage xmlns:toolkitPrimitives="clr-namespace:Microsoft.Phone.Controls.Primitives;assembly=Microsoft.Phone.Controls.Toolkit"  xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" x:Class="EZTVMetro.MainPage" 
+    mc:Ignorable="d"
+    SupportedOrientations="Portrait"  Orientation="Portrait"
+    shell:SystemTray.IsVisible="True" d:DesignHeight="768" d:DesignWidth="480">
+
+    <phone:PhoneApplicationPage.Resources>
+        <shell:ApplicationBar x:Key="appbarListings">
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar_icons/appbar.refresh.png" Text="Refresh"  Click="AppBarRefresh_Click"/>
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar_icons/appbar.search.png" Text="Search" Click="AppBarSearch_Click"/>
+        </shell:ApplicationBar>
+
+        <shell:ApplicationBar x:Key="appbarDownloads">
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar_icons/appbar.pause.png" Text="Pause All" />
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar_icons/appbar.play.png" Text="Resume All" />
+        </shell:ApplicationBar>
+        <shell:ApplicationBar x:Key="appbarShows">
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar_icons/appbar.refresh.png" Text="Refresh"  Click="AppBarRefresh_Click"/>
+        </shell:ApplicationBar>
+        <shell:ApplicationBar x:Key="appbarAdd">
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar_icons/appbar.save.png" Text="Save" Click="AppBarSaveClient_Click"/>
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar_icons/appbar.clear.png" Text="Clear" />
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar_icons/appbar.cancel.png" Text="Cancel" />
+        </shell:ApplicationBar>
+        <Style x:Key="ListBoxStyle1" TargetType="ListBox">
+        	<Setter Property="Background" Value="Transparent"/>
+        	<Setter Property="Foreground" Value="{StaticResource PhoneForegroundBrush}"/>
+        	<Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+        	<Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+        	<Setter Property="BorderThickness" Value="0"/>
+        	<Setter Property="BorderBrush" Value="Transparent"/>
+        	<Setter Property="Padding" Value="0"/>
+        	<Setter Property="Template">
+        		<Setter.Value>
+        			<ControlTemplate TargetType="ListBox">
+        				<ScrollViewer x:Name="ScrollViewer" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}" Padding="{TemplateBinding Padding}">
+        					<ItemsPresenter/>
+        				</ScrollViewer>
+        			</ControlTemplate>
+        		</Setter.Value>
+        	</Setter>
+        </Style>
+
+    </phone:PhoneApplicationPage.Resources>
+    
+	<phone:PhoneApplicationPage.FontFamily>
+		<StaticResource ResourceKey="PhoneFontFamilyNormal"/>
+	</phone:PhoneApplicationPage.FontFamily>
+	<phone:PhoneApplicationPage.FontSize>
+		<StaticResource ResourceKey="PhoneFontSizeNormal"/>
+	</phone:PhoneApplicationPage.FontSize>
+	<phone:PhoneApplicationPage.Foreground>
+		<StaticResource ResourceKey="PhoneForegroundBrush"/>
+	</phone:PhoneApplicationPage.Foreground>
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot">
+        <controls:Pivot Background="White" FontWeight="SemiBold" x:Name="pivot" SelectionChanged="pivot_SelectionChanged" BorderBrush="Black" Foreground="#FF323433">
+               <controls:Pivot.Title>
+			      <Grid Height="55">
+			         <TextBlock Text="µMETRO" Margin="0,0,305,0" FontSize="24" Foreground="#FF7D7D84" FontFamily="Segoe WP" FontWeight="Normal" />
+					 <TextBlock Text="beta" Margin="0,0,353,-4" FontSize="24" VerticalAlignment="Bottom" Height="33" RenderTransformOrigin="0.493,1.13" Foreground="#FFB2B2B5" FontWeight="Normal" />
+			      </Grid>
+   			   </controls:Pivot.Title>
+			<!--Pivot item one-->
+            <controls:PivotItem Header="latest" Margin="25,0,8,0">
+                <!--Double line list with text wrapping-->
+                <ListBox ItemsSource="{Binding Listing}" Name="listings" Margin="0,0,-12,0" IsSynchronizedWithCurrentItem="False" Foreground="Black" Background="Transparent">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="0,0,0,8" Width="432" Height="auto" UseLayoutRounding="True" Name="stack_listing" Loaded="stack_listing_Loaded" Background="#FFEEF1F5">
+                                <TextBlock Text="{Binding Title}" TextWrapping="Wrap" Style="{StaticResource PhoneTextTitle3Style}" Foreground="#FF4B4D57" />
+                                <StackPanel Width="432" Height="auto" Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Size}" TextWrapping="Wrap" Margin="12,-1,6,2" Style="{StaticResource PhoneTextSubtleStyle}" Foreground="#FF4EC6F6" />
+                                    <TextBlock Text="{Binding PubDate}" TextWrapping="Wrap" Margin="12,-1,6,2" Style="{StaticResource PhoneTextSubtleStyle}" Foreground="#FF4EC6F6" />
+                                </StackPanel>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </controls:PivotItem>
+            <!--Pivot item two-->
+            <controls:PivotItem Header="downloads" Margin="25,0,8,0">
+                <!--Triple line list no text wrapping-->
+                <ListBox x:Name="downloads" Margin="0,0,-12,0" ItemsSource="{Binding Torrents}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="0,0,0,8" Background="#FFEEF1F5" Loaded="stack_listing_Loaded" Width="432" Height="auto" UseLayoutRounding="True">
+                                <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Margin="5,5,5,5" Style="{StaticResource PhoneTextTitle3Style}" Foreground="#FF4B4D57" />
+                                <Canvas x:Name="ContentPanelCanvas" Grid.Row="1" Background="{StaticResource PhoneSubtleBrush}" Margin="5,2,5,2" Grid.Column="1" Width="420" Height="10" HorizontalAlignment="Left">
+                                    <Rectangle StrokeThickness="0" Fill="#ffff6d00" Height="10" Width="{Binding Bar}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                </Canvas>
+                                <TextBlock Text="{Binding Info1}" TextWrapping="Wrap" Margin="12,2,0,0" Style="{StaticResource PhoneTextSubtleStyle}" Foreground="#FF4EC6F6"/>
+                                <TextBlock Text="{Binding Info2}" TextWrapping="Wrap" Margin="12,-5,0,5" Style="{StaticResource PhoneTextSubtleStyle}" Foreground="#FF4EC6F6"/>
+                            </StackPanel>
+
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </controls:PivotItem>
+            <controls:PivotItem Header="shows" Margin="25,0,8,0">
+                <StackPanel Margin="0,-5,0,0">
+                    <StackPanel Orientation="Horizontal">
+                        <toolkit:PhoneTextBox x:Name="filter" Width="355" MaxLength="35" AcceptsReturn="False" Margin="-13,-10,6,0"  Hint="Ex: Airing, Sunday, 30 Rock" BorderBrush="#FF4EC6F6" BorderThickness="2" Foreground="#FF4EC6F6" FontWeight="Normal"></toolkit:PhoneTextBox>
+                        <Button  Name="show_filter" Margin="-10,-10,0,0" Click="show_filter_Click" BorderBrush="#FF4EC6F6" BorderThickness="2" Foreground="#FF4EC6F6">Filter</Button>
+                    </StackPanel>
+                    <ListBox x:Name="shows" Margin="0,0,-12,0" ItemsSource="{Binding Shows}" Height="600">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="0,0,0,8" Loaded="stack_listing_Loaded" Width="432" Height="auto">
+                                    <TextBlock Text="{Binding Title}" TextWrapping="Wrap" Margin="12,0,0,1" Style="{StaticResource PhoneTextTitle3Style}" Foreground="#FF4B4D57"/>
+                                    <TextBlock Text="{Binding Status}" TextWrapping="Wrap" Margin="12,0,0,1" Style="{StaticResource PhoneTextSubtleStyle}" Foreground="#FF4EC6F6"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>
+            </controls:PivotItem>
+            <controls:PivotItem Header="clients" Margin="25,0,8,0">
+                <ListBox x:Name="clients" Margin="0,0,-12,0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="0,0,0,8">
+                                <toolkit:ContextMenuService.ContextMenu>
+                                    <toolkit:ContextMenu Name="cmListing" >
+                                        <toolkit:MenuItem Name="Delete" Header="Delete" Click="client_DeleteClick" />
+                                    </toolkit:ContextMenu>
+                                </toolkit:ContextMenuService.ContextMenu>
+                                <TextBlock Text="{Binding Name}" FontWeight="Bold" TextWrapping="Wrap" Margin="12,0,12,0" Style="{StaticResource PhoneTextLargeStyle}" />
+                                <TextBlock Text="{Binding Ctype}" TextWrapping="NoWrap" Margin="12,0,0,0" Style="{StaticResource PhoneTextSubtleStyle}" />
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Host}" TextWrapping="Wrap" Margin="12,0,0,0" Style="{StaticResource PhoneTextSubtleStyle}"/>
+                                    <TextBlock Text=":" TextWrapping="Wrap" Margin="0,0,0,0" Style="{StaticResource PhoneTextSubtleStyle}" />
+                                    <TextBlock Text="{Binding Port}" TextWrapping="Wrap" Margin="0,0,0,0" Style="{StaticResource PhoneTextSubtleStyle}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </controls:PivotItem>
+            <controls:PivotItem Header="add" Margin="25,0,8,0">
+                <!--Triple line list no text wrapping-->
+                <StackPanel>
+                    <toolkit:PhoneTextBox x:Name="client_add_name" TextWrapping="NoWrap" Width="447" VerticalScrollBarVisibility="Disabled" Hint="Name (Workplace, Home PC, PC1)" HorizontalAlignment="Center" VerticalAlignment="Center" InputScope="Text" MaxLength="35" 
+                                          BorderBrush="#FF4EC6F6" BorderThickness="2" Foreground="#FF4EC6F6" FontWeight="Normal"/>
+                    <StackPanel>
+                        <toolkit:ListPicker SelectedIndex="1" Width="422" x:Name="clientAddClientType" BorderBrush="#FF4EC6F6" BorderThickness="2" Foreground="#FF4EC6F6" FontWeight="Normal"/>
+                        <TextBlock x:Name="ClientSelection" CacheMode="BitmapCache"/>
+                    </StackPanel>
+                    <toolkit:PhoneTextBox x:Name="client_add_host" TextWrapping="NoWrap" Width="447" VerticalScrollBarVisibility="Disabled" Hint="Host (Ex: 192.168.1.2)" HorizontalAlignment="Center" VerticalAlignment="Center" MaxLength="35" BorderBrush="#FF4EC6F6" BorderThickness="2" Foreground="#FF4EC6F6" FontWeight="Normal"/>
+                    <toolkit:PhoneTextBox x:Name="client_add_port" TextWrapping="NoWrap" Width="231" VerticalScrollBarVisibility="Disabled" HorizontalAlignment="Left" VerticalAlignment="Center" InputScope="Number" Hint="9000" MaxLength="5" BorderBrush="#FF4EC6F6" BorderThickness="2" Foreground="#FF4EC6F6" FontWeight="Normal"/>
+                    <toolkit:PhoneTextBox x:Name="client_add_username" TextWrapping="NoWrap" Width="447" VerticalScrollBarVisibility="Disabled" Hint="Username" HorizontalAlignment="Center" VerticalAlignment="Center" MaxLength="35" BorderBrush="#FF4EC6F6" BorderThickness="2" Foreground="#FF4EC6F6" FontWeight="Normal"/>
+                    <toolkit:PhoneTextBox x:Name="client_add_password" TextWrapping="NoWrap" Width="447" VerticalScrollBarVisibility="Disabled" Hint="Password" HorizontalAlignment="Center" VerticalAlignment="Center" InputScope="Text" MaxLength="35" BorderBrush="#FF4EC6F6" BorderThickness="2" Foreground="#FF4EC6F6" FontWeight="Normal"/>
+                    <CheckBox x:Name="client_add_auth" Content="Use Authentication?" RenderTransformOrigin="0.729,2.064" IsChecked="True" BorderBrush="#FF4EC6F6" BorderThickness="2" Foreground="#FF4EC6F6" FontWeight="Normal"/>
+
+                </StackPanel>
+            </controls:PivotItem>
+        </controls:Pivot>
+        <!--Pivot Control-->
+
+  
+    </Grid>
+    
+</phone:PhoneApplicationPage>
